@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous'>
+        <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
+        <meta charset='UTF-8'>
+        <title></title>
+    </head>
+
+    <body class = 'items-center text-dark' style = 'background-color: #DCDCDC; text-align: center;'>
+    
+    <script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script>
+    
+<!--     Navbar    -->
+    
+    <nav class='navbar navbar-expand-lg navbar-dark bg-dark'>
+            
+            <a class='navbar-brand' onclick = "LoadHomePage();"href='#'>Welcome To The North East</a>
+            
+            <button class='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarNavDropdown' aria-controls='navbarNavDropdown' aria-expanded='false' aria-label='Toggle navigation'>
+                <span class='navbar-toggler-icon'></span>
+            </button>
+            
+            <div class='collapse navbar-collapse' id='navbarNavDropdown'>
+               
+             <ul class='navbar-nav'>
+                    
+                    <li class='nav-item active'>
+                        <a class='nav-link' onclick = "LoadHomePage();"  href='#'>Home <span class='sr-only'>(current)</span></a>
+                    </li>
+                    
+                    <li class='nav-item' id = 'sign-in-menu-item'>
+                        <a class='nav-link' onclick = "LoadLoginPage();" href='#'>Sign In</a>
+                    </li>
+                    
+                    <li class='nav-item dropdown'>
+                        <a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Explore</a>
+                        <div class='dropdown-menu ' aria-labelledby='navbarDropdownMenuLink'>
+                            <a class='dropdown-item' onclick = " exploreRegion('Newcastle');" href='#'>Newcastle</a>
+                            <a class='dropdown-item' onclick = " exploreRegion('Gateshead');" href='#'>Gateshead</a>
+                            <a class='dropdown-item' onclick = " exploreRegion('Durham');" href='#'>Durham</a>
+                            <a class='dropdown-item' onclick = " exploreRegion('North Tyneside');" href='#'>North Tyneside</a>
+                            <a class='dropdown-item' onclick = " exploreRegion('South Tyneside');" href='#'>South Tyneside</a>
+                            <a class='dropdown-item' onclick = " exploreRegion('Sunderland');" href='#'>Sunderland</a>
+                            <a class='dropdown-item' onclick = " exploreRegion('Northumberland');" href='#'>Northumberland</a>
+                        </div>
+                    
+                    </li>
+                        <a class='nav-link' onclick = "LoadUploadPage();" href='#'>Upload</a>
+                    <li>
+                        
+                    </li>
+                    
+                    <li class='nav-item' id = 'contributors-menu-item'>
+                        <a class='nav-link' onclick = "viewContributors();" href='#'>Contributors</a>
+                    </li>
+                    
+                    <li class='nav-item' style = 'display: none;' id = 'sign-out-menu-item'>
+                        <a class='nav-link' id = 'sign-out-menu-item-link' onclick = "signOut();" href='#'></a>
+                    </li>
+
+                </ul>
+            </div>
+        </nav>
+        
+        
+<!--     Main div in which other divs are inserted in order to give single page feel     -->
+    <div id = 'main'>
+    
+    
+    </div>
+    
+<!--     div containing the login section of the site     -->
+    
+    <div id = 'login-page' style = 'display:none'>
+        <div style = 'display: inline-block;'>
+        
+            <br>
+            <br>
+            <br>
+        
+            <h1>Sign In</h1>
+            
+            <br>
+            
+            <p>Please enter your login details:</p>
+            
+            <br>
+            
+            <div class='input-group mb-3' style = 'max-width: 300px;'>            
+                <input id = 'username-box' type='text' class='form-control' placeholder='Username' aria-label='Username'  >
+            </div>
+
+            <div class='input-group mb-3' style = 'max-width: 300px;'>
+                <input id = 'password-box' type='text' class='form-control' placeholder='Password' aria-label='Password' >
+            </div>
+            
+            <br>
+            
+            <button id = 'sign-in-button' type='button' class='btn btn-dark' onclick='AttemptSignIn();'>Sign In</button>
+            
+            <br>
+            <br>
+            
+            <p>Don't have an account yet? <a onclick = 'LoadRegisterPage();' href = '#'>Sign up now!</a></p>
+        <div>
+    </div>
+    
+    <!--     div containing the register section of the site     -->
+    
+    <div id = 'register-page' style = 'display:none'>
+        <div style = "display:inline-block;">
+    
+            <br>
+            <br>
+            <br>
+        
+            <h1>Register</h1>
+            
+            <br>
+            
+            <p>Please create your user name and password:</p>
+            
+            <br>
+            
+            <div class='input-group mb-3' style = 'max-width: 300px;'>            
+                <input id = 'create-username-box' type='text' class='form-control' placeholder='Username' aria-label='Username'  >
+            </div>
+            
+            <div class='input-group mb-3' style = 'max-width: 300px;'>            
+                <input id = 'create-password-box' type='text' class='form-control' placeholder='Password' aria-label='Username'  >
+            </div>
+
+            <div class='input-group mb-3' style = 'max-width: 300px;'>
+                <input id = 'check-password-box' type='text' class='form-control' placeholder=' Confirm Password' aria-label='Password' >
+            </div>
+            
+            <br>
+            
+            <button id = 'register-button' type='button' class='btn btn-dark' onclick='AttemptRegister();'>Register</button>
+            
+            <br>
+            <br>
+            
+            <p>Have an account already? <a onclick='LoadLoginPage();' href = '#'>Log in here!</a></p>
+            
+        </div>
+        
+        <p>Disclaimer: This account creation is not designed to be secure and is simply used to help credit the users who interact with this site. Please do not give any personal information.</p>
+        
+    </div>
+    
+    <!--     div containing the home section of the site     -->
+    
+    <div id = 'home-page'  style = 'display:none'>
+    
+            <div id="image-carousel" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    <li data-target="#Newcastle" data-slide-to="0" class="active"></li>
+                    <li data-target="#Gateshead" data-slide-to="1"></li>
+                    <li data-target="#Durham" data-slide-to="2"></li>
+                    <li data-target="#North Tyneside" data-slide-to="3"></li>
+                    <li data-target="#South Tyneside" data-slide-to="4"></li>
+                    <li data-target="#Sunderland" data-slide-to="5"></li>
+                    <li data-target="#Northumberland" data-slide-to="6"></li>
+                </ol>
+                <div class="carousel-inner">
+                    <div class="carousel-item active" onclick=" exploreRegion('Newcastle');">
+                        <img src="https://greatbritishmag.co.uk/wp-content/uploads/2018/05/newcastle-upon-tyne-featured.jpg" class="d-block w-100" alt="Newcastle Upon Tyne" style = 'max-height: 76vh; ' >
+                        <div class="carousel-caption d-none d-md-block">
+                            <h3>Newcastle Upon Tyne</h3>
+                            <p>The greatest city on earth!</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item" onclick=" exploreRegion('Gateshead');">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5a/Fly-Angel.jpg" class="d-block w-100" alt="Gateshead" style = 'max-height: 76vh; '>
+                        <div class="carousel-caption d-none d-md-block">
+                            <h3>Gateshead</h3>
+                            <p>A borough full of culture</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item" onclick=" exploreRegion('Durham');">
+                        <img src="https://i.pinimg.com/originals/73/d3/4d/73d34d30511362bb77fb71b5f9d864eb.jpg" class="d-block w-100" alt="Durham" style = 'max-height: 76vh;'>
+                        <div class="carousel-caption d-none d-md-block">
+                            <h3>Durham</h3>
+                            <p>Famous for its beatiful Cathedral and world-class university</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item" onclick=" exploreRegion('North Tyneside');">
+                        <img src="https://www.northtynesidebusinessforum.org.uk/wp-content/uploads/2018/08/DSC3030.jpg" class="d-block w-100" alt="North Sheilds" style = 'max-height: 76vh; '>
+                        <div class="carousel-caption d-none d-md-block">
+                            <h3>North Tyneside</h3>
+                            <p>An old fishing town with a rich history</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item" onclick=" exploreRegion('South Tyneside');">
+                        <img src="https://pbs.twimg.com/media/Dccg5VCXcAIW4QJ.jpg" alt="South Sheilds" class="d-block w-100" style = 'max-height: 76vh; '>
+                        <div class="carousel-caption d-none d-md-block">
+                            <h3>South Tyneside</h3>
+                            <p>Famous for its beautiful beaches</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item" onclick=" exploreRegion('Sunderland');">
+                        <img src="https://i.pinimg.com/originals/eb/0b/0c/eb0b0c1fb579437b360c6208a4e96ca7.jpg" alt="Sunderland" class="d-block w-100" style = 'max-height: 76vh; '>
+                        <div class="carousel-caption d-none d-md-block">
+                            <h3>Sunderland</h3>
+                            <p>A proud city once famous for its ship-building industry</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item" onclick=" exploreRegion('Northumberland');">
+                        <img src="https://static.wixstatic.com/media/813980_e704510e5998417e8282d1efe8f3e179~mv2.jpg" alt="Northumberland" class="d-block w-100" style = 'max-height: 76vh; '>
+                        <div class="carousel-caption d-none d-md-block">
+                            <h3>Northumberland</h3>
+                            <p>The beautiful countryside of the North East</p>
+                        </div>
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#image-carousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#image-carousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+            
+            <div class="jumbotron bg-dark text-light bg-gradient-light">
+                <h3 class="display-4">Welcome!</h3>
+                    <p class="lead">This website pays homage to the greatest region earth! From photos of the fascinating city of Newcastle to the beautiful landscapes of of Northumberland. Start exploring by clicking on the regions above!</p>
+                <hr class="my-4">
+                <p>Whats more, all the photos on this sight are uploaded by its users, so why not share your own favourite photos of the North East?! If you dont already have one, why not get started by creating an account using the button below!</p>
+                <a class="btn btn-light text-dark btn-lg" href="#" role="button" onclick = " LoadRegisterPage();">Sign up</a>
+            </div>
+
+    </div>
+    
+    <!--     div containing the upload section of the site     -->
+    
+    <div id = "upload-page" style ="display:none">
+        
+    
+        <br>
+        <br>
+        <br>
+    
+        <h1>Upload</h1>
+        
+        <br>
+        
+        <p>Help us share the beauty of the North East by uploading url links to your favourite photos of the region using the form below!</p>
+        
+        <br>
+        
+        <div style = "display: inline-block;">
+        
+            <div class='input-group mb-3' style = 'max-width: 300px;'>            
+                <input id = 'url-box' type='text' class='form-control' placeholder='URL' aria-label='URL'  >
+            </div>
+            
+            <div class='input-group mb-3' style = 'max-width: 300px;'>            
+                <input id = 'description-box' type='text' class='form-control' placeholder='Description' aria-label='Description'  >
+            </div>
+            
+            <div class="input-group mb-3" style = 'max-width: 300px;'>
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="region-selector">Region</label>
+                </div>
+                <select class="custom-select" id="region-selector">
+                    <option selected>Select...</option>
+                    <option value="Newcastle">Newcastle</option>
+                    <option value="Gateshead">Gateshead</option>
+                    <option value="Durham">Durham</option>
+                    <option value="North Tyneside">North Tyneside</option>
+                    <option value="South Tyneside">South Tyneside</option>
+                    <option value="Sunderland">Sunderland</option>
+                    <option value="Northumberland">Northumberland</option>
+                </select>
+            </div>     
+        
+        </div>   
+        <br>
+        
+        <button id = 'upload-button' type='button' class='btn btn-dark' onclick='AttemptUpload();'>Upload</button>
+        
+        <br>
+        <br>
+        
+        <p>You must be signed in in order to upload. If your are not signed in yet, please <a onclick='LoadLoginPage();' href = '#'>log in here!</a></p>
+        
+        
+    </div>
+    
+    <!--     div containing the explore section of the site (some html is inserted from index.js)    -->
+    
+    <div id = "explore-page" style = 'display:none;'>
+        <div style = 'display: inline-block;'>
+
+            <br>
+            <br>
+            
+            <h2 id = 'explore-header'></h2>
+            
+            <div id = 'explore-grid' class = 'container-fluid text-center' style = 'padding-left: 5vh; padding-right: 5vh; display: inline-table;'>
+                <div class="row">
+                    <div id ='left-column' class = 'col-sm'></div>
+                    <div id ='middle-column' class = 'col-sm'></div>
+                    <div id ='right-column' class = 'col-sm'></div>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!--     div containing the contributors page (some html content is inserted from index.js)    -->
+    
+    <div id = "contributors-page" style = 'display:none;'>
+        <div style = 'display: inline-block;'>
+
+            <br>
+            <br>
+            
+            <h2>Contributors</h2>
+            
+            <p id = 'contributors-page-message'>Thanks for using our website. This page is just a little recognition for all our users who give this site the content it needs. Can't see yourself here? Then go create an account and start uploading!</p>
+            
+            <div id = 'contributors-grid' class = 'container-fluid text-center' style = 'padding-left: 5vh; padding-right: 5vh; display: inline-table;'>
+                <div class="row" style="padding: 10px;">
+                    <div id ='left-contributors-column' class = 'col-sm'></div>
+                    <div id ='middle-contributors-column' class = 'col-sm'></div>
+                    <div id ='right-contributors-column' class = 'col-sm'></div>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+    <div id = 'clear-content'></div>
+    
+    <!--     div containing a template for an error alert    -->
+    
+    <div id = 'error-alert' style = "display: none;">
+        <div  class="alert alert-danger alert-dismissible fade show" role="alert" >
+            <p id = 'error-text'></p>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    
+    <!--     div containing a template for an notification    -->
+    
+    <div id = 'notification-alert' style = "display: none;" >
+        <div  class="alert alert-primary alert-dismissible fade show" role="alert">
+            <p id = 'notification-text'></p>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    
+<!--     scripts needed to interact with server and to use bootstrap     -->
+
+    <script src = 'index.js'></script>
+    <script src='https://code.jquery.com/jquery-3.3.1.slim.min.js' integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo' crossorigin='anonymous'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js' integrity='sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1' crossorigin='anonymous'></script>
+    <script src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js' integrity='sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM' crossorigin='anonymous'></script>
+
+    </body>
+</html>
